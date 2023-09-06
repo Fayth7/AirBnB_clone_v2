@@ -1,52 +1,52 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 """
-Fabric script to distribute an archive to your web servers and deploy it
+Compress and deploy web static package to remote servers.
 """
 
-from fabric.api import run, put, env
-from os.path import exists
+from fabric.api import *
+from os import path
 
-# Replace with your actual server IPs
-env.hosts = ['<IP web-01>', '<IP web-02>']
-env.user = 'ubuntu'  # Replace with your SSH username
-# Replace with your SSH private key path
-env.key_filename = 'my_ssh_private_key'
+env.hosts = ['54.172.92.53', '34.207.61.123']
+env.user = 'ubuntu'
+env.key_filename = '~/.ssh/school'
 
 
 def do_deploy(archive_path):
-    """Distribute and deploy an archive to the web servers"""
-
-    if not exists(archive_path):
+    """
+    Deploy web files to server.
+    Args:
+        archive_path (str): The path to the compressed archive file.
+    Returns:
+        bool: True if deployment is successful, False otherwise.
+    """
+    if not path.exists(archive_path):
         return False
 
     try:
-        # Upload the archive to /tmp/ on the remote server
+        # Upload archive to server
         put(archive_path, '/tmp/')
 
-        # Extract the archive to the appropriate folder
-        archive_filename = archive_path.split('/')[-1]
-        folder_name = "/data/web_static/releases/{}".format(
-            archive_filename.split('.')[0])
-        run("mkdir -p {}".format(folder_name))
-        run("tar -xzf /tmp/{} -C {}".format(archive_filename, folder_name))
+        # Extract archive and delete .tgz
+        timestamp = archive_path.split('_')[-1][:-4]
+        release_dir = '/data/web_static/releases/web_static_{}'.format(
+            timestamp)
+        run('sudo mkdir -p {}'.format(release_dir))
+        run('sudo tar -xzf /tmp/web_static_{}.tgz -C {}'.format(timestamp, release_dir))
+        run('sudo rm /tmp/web_static_{}.tgz'.format(timestamp))
 
-        # Delete the archive from the remote server
-        run("rm /tmp/{}".format(archive_filename))
+        # Move contents into host web_static
+        run('sudo mv {}/web_static/* {}/'.format(release_dir, release_dir))
 
-        # Move the contents of the extracted folder to the web_static folder
-        run("mv {}/web_static/* {}".format(folder_name, folder_name))
+        # Remove extraneous web_static dir
+        run('sudo rm -rf {}/web_static'.format(release_dir))
 
-        # Remove the now empty web_static folder
-        run("rm -rf {}/web_static".format(folder_name))
+        # Delete pre-existing symbolic link
+        run('sudo rm -rf /data/web_static/current')
 
-        # Delete the existing symbolic link
-        run("rm -rf /data/web_static/current")
+        # Create a symbolic link
+        run('sudo ln -s {} /data/web_static/current'.format(release_dir))
 
-        # Create a new symbolic link to the deployed version
-        run("ln -s {} /data/web_static/current".format(folder_name))
-
-        print("New version deployed!")
         return True
-
     except Exception as e:
+        print(e)
         return False

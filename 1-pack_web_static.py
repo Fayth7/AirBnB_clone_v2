@@ -5,6 +5,7 @@ from fabric.api import local
 from datetime import datetime
 from fabric.decorators import runs_once
 
+
 @runs_once
 def do_pack():
     '''Generates .tgz archive from the contents of the web_static folder'''
@@ -16,6 +17,7 @@ def do_pack():
         return file_name
     except Exception:
         return None
+
 
 if __name__ == "__main__":
     result = do_pack()
