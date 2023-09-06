@@ -1,69 +1,104 @@
 # AirBnB clone web server setup and configuration
 
-# Ensure Nginx is installed
+# Define the Nginx configuration
+$nginx_conf = "
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    add_header X-Served-By ${hostname};
+    root   /var/www/html;
+    index  index.html index.htm;
+
+    location /hbnb_static {
+        alias /data/web_static/current;
+        index index.html index.htm;
+    }
+
+    location /redirect_me {
+        return 301 http://fayth.tech/;
+    }
+
+    error_page 404 /404.html;
+
+    location /404 {
+        root /var/www/html;
+        internal;
+    }
+}
+"
+
+# Install Nginx package
 package { 'nginx':
-  ensure => installed,
+  ensure   => 'installed',
+  provider => 'apt',
 }
 
-# Create necessary directories
+# Create directory structure for web server
 file { '/data':
-  ensure => 'directory',
-  owner  => 'ubuntu',
-  group  => 'ubuntu',
+  ensure  => 'directory',
 }
 
 file { '/data/web_static':
   ensure => 'directory',
-  owner  => 'root',
-  group  => 'root',
 }
 
 file { '/data/web_static/releases':
   ensure => 'directory',
-  owner  => 'root',
-  group  => 'root',
-}
-
-file { '/data/web_static/shared':
-  ensure => 'directory',
-  owner  => 'root',
-  group  => 'root',
 }
 
 file { '/data/web_static/releases/test':
   ensure => 'directory',
-  owner  => 'root',
-  group  => 'root',
 }
 
-# Create a fake HTML file for testing
+file { '/data/web_static/shared':
+  ensure => 'directory',
+}
+
+# Create index.html for test page
 file { '/data/web_static/releases/test/index.html':
-  ensure  => 'file',
-  content => '<html>\n  <head>\n  </head>\n  <body>\n    Holberton School\n  </body>\n</html>\n',
-  owner   => 'root',
-  group   => 'root',
+  ensure  => 'present',
+  content => "This webpage is found in /data/web_static/releases/test/index.htm\n",
 }
 
-# Ensure the symbolic link is created
+# Create symbolic link for current version
 file { '/data/web_static/current':
-  ensure  => 'link',
-  target  => '/data/web_static/releases/test',
-  owner   => 'root',
-  group   => 'root',
+  ensure => 'link',
+  target => '/data/web_static/releases/test',
 }
 
-# Set up Nginx configuration to serve web_static
+# Change ownership of /data directory to 'ubuntu:ubuntu'
+exec { 'chown -R ubuntu:ubuntu /data/':
+  path => '/usr/bin/:/usr/local/bin/:/bin/',
+}
+
+# Create directories for Nginx
+file { '/var/www':
+  ensure => 'directory',
+}
+
+file { '/var/www/html':
+  ensure => 'directory',
+}
+
+# Create index.html for default page
+file { '/var/www/html/index.html':
+  ensure  => 'present',
+  content => "This is my first upload in /var/www/index.html\n",
+}
+
+# Create custom 404.html page
+file { '/var/www/html/404.html':
+  ensure  => 'present',
+  content => "Ceci n'est pas une page - Error page\n",
+}
+
+# Configure the default Nginx site
 file { '/etc/nginx/sites-available/default':
-  ensure  => 'file',
-  content => "server {\n\tlisten 80 default_server;\n\tserver_name _;\n\tlocation /hbnb_static {\n\t\talias /data/web_static/current;\n\t}\n}\n",
-  owner   => 'root',
-  group   => 'root',
-  require => Package['nginx'],
+  ensure  => 'present',
+  content => $nginx_conf,
 }
 
 # Restart Nginx to apply changes
-service { 'nginx':
-  ensure    => 'running',
-  enable    => true,
-  subscribe => File['/etc/nginx/sites-available/default'],
+exec { 'nginx restart':
+  path => '/etc/init.d/',
 }
