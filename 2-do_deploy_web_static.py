@@ -4,7 +4,8 @@ Compress and deploy web static package to remote servers.
 """
 
 from fabric.api import *
-from os import path
+from datetime import datetime
+from os.path import exists
 
 env.hosts = ['54.172.92.53', '34.207.61.123']
 env.user = 'ubuntu'
