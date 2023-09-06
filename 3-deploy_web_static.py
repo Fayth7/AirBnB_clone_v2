@@ -3,12 +3,12 @@
 Fabric script to create and distribute an archive to your web servers
 """
 
-from fabric.api import local, run, put, env
-from os.path import exists
+from fabric.api import *
 from datetime import datetime
+from os.path import exists
 
-env.hosts = '54.172.92.53', '34.207.61.123']
-env.user = 'ubuntu'  
+env.hosts = ['54.172.92.53', '34.207.61.123']
+env.user = 'ubuntu'
 
 
 @runs_once
