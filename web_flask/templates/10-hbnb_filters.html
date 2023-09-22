@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>HBNB</title>
+    <link rel="stylesheet" href="/static/styles/3-header.css" type="text/css">
+    <link rel="stylesheet" href="/static/styles/4-common.css" type="text/css">
+    <link rel="stylesheet" href="/static/styles/3-footer.css" type="text/css">
+    <link rel="stylesheet" href="/static/styles/6-filters.css" type="text/css">
+</head>
+
+<body>
+    <header class="clearfix">
+        <div class="logo">
+            <img src="/static/images/logo.png" alt="Holberton School">
+        </div>
+        <div class="title">
+            <h1>HBNB</h1>
+            <nav>
+                <ul>
+                    <li><a href="#">Places</a></li>
+                    <li><a href="#">Reviews</a></li>
+                    <li><a href="#">My profile</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <div class="container">
+        <section class="filters">
+            <h2>Filters</h2>
+            <div class="popover">
+                <h3>States</h3>
+                <div class="popover-content">
+                    <label class="popover_checkbox">
+                        <input type="checkbox" class="popover_input" name="states" id="state_id" value="all"> All
+                    </label>
+                    {% for state in states %}
+                    <label class="popover_checkbox">
+                        <input type="checkbox" class="popover_input" name="states" id="state_{{ state.id }}"
+                            value="{{ state.id }}"> {{ state.name }}
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="popover">
+                <h3>Amenities</h3>
+                <div class="popover-content">
+                    <label class="popover_checkbox">
+                        <input type="checkbox" class="popover_input" name="amenities" id="amenity_id" value="all"> All
+                    </label>
+                    {% for amenity in amenities %}
+                    <label class="popover_checkbox">
+                        <input type="checkbox" class="popover_input" name="amenities" id="amenity_{{ amenity.id }}"
+                            value="{{ amenity.id }}"> {{ amenity.name }}
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        <section class="places">
+            <h2>Places</h2>
+            <article class="place">
+                <div class="title">
+                    <h3>&nbsp;</h3>
+                </div>
+                <div class="price">
+                    <h3>&nbsp;</h3>
+                </div>
+                <div class="information">
+                    <div class="max_guest">
+                        <i class="fa fa-users fa-3x" aria-hidden="true"></i>
+                        <br>
+                        <div class="guest">&nbsp;</div>
+                        <br>
+                        <div class="text">Guest(s)</div>
+                    </div>
+                    <div class="number_rooms">
+                        <i class="fa fa-bed fa-3x" aria-hidden="true"></i>
+                        <br>
+                        <div class="bedrooms">&nbsp;</div>
+                        <br>
+                        <div class="text">Bedroom(s)</div>
+                    </div>
+                    <div class="number_bathrooms">
+                        <i class="fa fa-bath fa-3x" aria-hidden="true"></i>
+                        <br>
+                        <div class="bathrooms">&nbsp;</div>
+                        <br>
+                        <div class="text">Bathroom(s)</div>
+                    </div>
+                </div>
+                <div class="description">
+                    <h3>&nbsp;</h3>
+                </div>
+            </article>
+        </section>
+    </div>
+    <footer>
+        <div class="logo">
+            <img src="/static/images/logo.png" alt="Holberton School">
+        </div>
+        <p>Holberton School</p>
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,9 @@
+AirBnB_clone_v2/
+    web_flask/
+        static/
+            styles/
+                3-footer.css
+                3-header.css
+                4-common.css
+                6-filters.css
+                8-places.css

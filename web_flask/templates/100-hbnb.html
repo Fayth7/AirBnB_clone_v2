@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/3-header.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/3-footer.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/4-common.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/6-filters.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/8-places.css') }}">
+    <title>HBNB</title>
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <a class="navbar-brand" href="#">HBNB</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Places</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">States</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Amenities</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <section class="container">
+        <h1 class="places-title">Places</h1>
+        <section class="filters">
+            <div class="places-filters">
+                <h3 class="filter-title">States</h3>
+                <div class="filter" name="state">
+                    {% for state in states %}
+                    <label class="container">{{ state.name }}
+                        <input type="checkbox">
+                        <span class="checkmark"></span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="places-filters">
+                <h3 class="filter-title">Amenities</h3>
+                <div class="filter" name="amenity">
+                    {% for amenity in amenities %}
+                    <label class="container">{{ amenity.name }}
+                        <input type="checkbox">
+                        <span class="checkmark"></span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        <section class="places">
+            {% for place in places %}
+            <article class="place">
+                <div class="place-price">{{ place.price_by_night }}</div>
+                <div class="place-name">{{ place.name }}</div>
+            </article>
+            {% endfor %}
+        </section>
+    </section>
+    <footer>
+        <p>Footer content here</p>
+    </footer>
+</body>
+
+</html>
