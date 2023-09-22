@@ -34,5 +34,17 @@ def c_route(text):
     return "C {}".format(escape(text).replace('_', ' '))
 
 
+@app.route('/python/', defaults={'text': 'is cool'}, strict_slashes=False)
+@app.route('/python/<text>', strict_slashes=False)
+def python_route(text):
+    """
+    Defines a route that displays "Python " 
+    followed by the value of the text variable
+    (replace underscore _ symbols with a space)
+    Default value for text is "is cool".
+    """
+    return "Python {}".format(escape(text).replace('_', ' '))
+
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
